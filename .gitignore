@@ -1,0 +1,55 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Environment variables
+.env
+*.env
+
+# Virtual environment
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Pytest
+.cache/
+*.log
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Coverage reports
+coverage.xml
+*.cover
+*.py,cover
+.coverage
+htmlcov/
+
+# Pylint
+pylint-report.txt
+pylint.log
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Sphinx documentation
+docs/_build/
+
+# IDE specific
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+## project specific
+output/
+mycv/

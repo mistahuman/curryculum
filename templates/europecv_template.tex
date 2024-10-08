@@ -1,0 +1,154 @@
+\documentclass[totpages,helvetica,openbib,italian,nologo,nobranding,title,totpages]{europecv}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx} 
+\usepackage[a4paper,top=1.27cm,left=1cm,right=1cm,bottom=2cm]{geometry}
+\usepackage[italian]{babel}
+\usepackage{url}
+\usepackage{bookmark}
+\usepackage{scrextend}
+\usepackage{pgfkeys}
+\usepackage{etoolbox}
+\usepackage[dvipsnames]{xcolor}
+
+
+\makeatletter
+\let\old@ecv@infosectionkey\ecv@infosectionkey% Copy \ecv@infosectionkey
+\renewcommand{\ecv@infosectionkey}
+  {\textcolor{ \VAR{ options.color }}{\old@ecv@infosectionkey} }
+\makeatother
+
+\newcommand{\mycvsection}[1]{\section{\textcolor{ \VAR{ options.color }}{#1} } }
+
+
+\renewcommand{\ttdefault}{phv} % Uses Helvetica instead of fixed width font
+
+\newcommand*{\SignatureAndDate}[1]{%
+	\par\noindent\makebox[2.5in]{Place \textsc{(Province)}, \today}
+	\par\noindent\makebox[2.5in]{\hrulefill} \hfill\makebox[2.0in]{\hrulefill}%
+	\par\noindent\hfill\makebox[5.43in][l]{\hspace{2cm}Place and date}    \makebox[2.0in][l]{#1}%
+}%
+
+
+\ecvname{\VAR{personal_info.name} \VAR{personal_info.surname}}
+\ecvfootername{\VAR{personal_info.name} \VAR{personal_info.surname}}
+\ecvaddress[]{\VAR{personal_info.address | escape_latex }}
+\ecvtelephone[]{\VAR{personal_info.phone | escape_latex }}
+\ecvemail{\href{mailto: \VAR{personal_info.email | escape_latex } }{\VAR{personal_info.email | escape_latex }}}
+% \ecvprofessional{\href{mailto: \VAR{personal_info.email | escape_latex } }{\VAR{personal_info.email | escape_latex }}}
+\ecvhomepage{\url{\VAR{personal_info.github | escape_latex }}}
+\ecvnationality{\VAR{personal_info.nationality | escape_latex }}
+\ecvdateofbirth{\VAR{personal_info.birthday | escape_latex }}
+\ecvgender{\VAR{personal_info.gender | escape_latex }}
+\ecvdate{\today}
+% \ecvyoutube{\url{www.youtube.com/myChannel}} 
+\ecvpicture[width=3cm]{../mycv/me.png}
+\ecvfootnote{Il sottoscritto autorizza il trattamento dei dati personali contenuti nel presente Curriculum Vitae ai sensi del D.Lgs. 196/2003 e del Regolamento UE 2016/679 (GDPR).}
+
+\begin{document}
+
+\ecvLeftColumnWidth{6cm}
+\ecvRuleWidth{1pt} 
+\ecvColSep{12pt}
+\selectlanguage{italian}
+
+\begin{europecv}
+	
+\ecvpersonalinfo[20pt]
+
+% \ecvitem{\large\textbf{Desired employment/ Occupational~field}}{\large\textbf{(Remove if not relevant)}}
+
+\pdfbookmark{Work experience}{Work experience}
+\mycvsection{Esperienza lavorativa}
+\BLOCK{ for exp in experience }
+\ecvitem{Date}{ \VAR{exp.start_date | escape_latex } : \VAR{exp.end_date | escape_latex } }
+\ecvitem{Nome e indirizzo del datore di lavoro}{ \VAR{exp.company | escape_latex} }
+\ecvitem{Tipo di azienda o settore}{ \VAR{exp.company_type | escape_latex} }
+\ecvitem{Funzione o posto occupato}{ \VAR{exp.job_title | escape_latex} }
+\ecvitem{Principali mansioni e responsabilità}{ \VAR{exp.main_experiences | escape_latex} }
+\BLOCK{ endfor }
+
+
+
+\pdfbookmark{Education and training}{Education and training}
+\mycvsection{Istruzione e formazione}
+
+\BLOCK{ for exp in education }
+\ecvitem{Date}{ \VAR{exp.start_date | escape_latex } : \VAR{exp.end_date | escape_latex } }
+\ecvitem{Certificato o diploma ottenuto}{ \VAR{exp.degree | escape_latex }}
+\ecvitem{Voto}{ \VAR{exp.grade | escape_latex }}
+\ecvitem{Nome e tipo d'istituto di istruzione o formazione}{ \VAR{exp.institution | escape_latex }}
+\ecvitem{Principali materie/Competenze professionali apprese}{ \VAR{exp.main_subjects | escape_latex } }
+\BLOCK{ endfor }
+
+\pdfbookmark{Personal skills and~competences}{Personal skills and~competences}
+\mycvsection{Capacità e competenze professionali}
+
+\ecvmothertongue[5pt]{ \VAR{skills.lang_skills.mothertongue | escape_latex}}
+\ecvitem{\large Altra lingua(e)}{}
+\ecvlanguageheader{(*)}
+\BLOCK{ for exp in skills.lang_skills.other_langs }
+\ecvlanguage{ \VAR{exp.know_language | escape_latex } }{ \VAR{exp.listening_level} }{ \VAR{exp.comprehension_level} }{ \VAR{exp.speaking_level} }{ \VAR{exp.speaking_level} }{ \VAR{exp.writing_level} }
+\BLOCK{ endfor }
+\ecvlanguagefooter[10pt]{(*)}
+
+
+\BLOCK{ if skills.hard_skills}
+\ecvitem[10pt]{\large Competenze tecniche}{ 
+	\BLOCK{ for skl in skills.hard_skills } 
+	$\bullet$ \VAR{skl.skill | escape_latex} 
+	\BLOCK{ endfor }
+}
+\BLOCK{ endif }
+
+\BLOCK{ if skills.soft_skills}
+\ecvitem[10pt]{\large Capacità e competenze relazionali}{ \BLOCK{ for skill in skills.soft_skills } \VAR{skill | escape_latex} \BLOCK{ if not loop.last 
+and skill }\newline \BLOCK{ endif } \BLOCK{ endfor }}
+\BLOCK{ endif }
+
+% \ecvitem[10pt]{\large Social skills and competences}{Replace this text by a description of these competences and indicate where they were acquired (remove if not relevant).}
+% \ecvitem[10pt]{\large Organisational skills and competences}{Replace this text by a description of these competences and indicate where they were acquired (remove if not relevant).}
+% \ecvitem[10pt]{\large Technical skills and competences}{Replace this text by a description of these competences and indicate where they were acquired (remove if not relevant).}
+% \ecvitem[10pt]{\large Computer skills and competences}{Replace this text by a description of these competences and indicate where they were acquired (remove if not relevant).}
+% \ecvitem[10pt]{\large Artistic skills and competences}{Replace this text by a description of these competences and indicate where they were acquired (remove if not relevant).}
+% \ecvitem[10pt]{\large Other skills and competences}{Replace this text by a description of these competences and indicate where they were acquired (remove if not relevant).}
+% \ecvitem{\large Driving licence(s)}{State here whether you hold a driving licence and if so for which categories of vehicle. (Remove if not relevant).}
+
+\BLOCK{ if driving_license}
+\ecvitem[10pt]{\large Patente/i}{ \VAR{driving_license | escape_latex} }
+\BLOCK{ endif }
+
+\BLOCK{ if certifications}
+\mycvsection{Certificazioni}
+  \BLOCK{ for cert in certifications } 
+    \ecvitem[1pt]{}{\small - \textit{\VAR{cert.title | escape_latex}} \BLOCK{if cert.released_at} (rilasciato \VAR{cert.released_at}) \BLOCK{endif}} \BLOCK{ endfor }
+\BLOCK{ endif }
+
+\BLOCK{ if publications}
+\mycvsection{Pubblicazioni}
+  \BLOCK{ for pub in publications } 
+    \ecvitem[1pt]{}{ \small - \VAR{pub.authors | escape_latex} "\VAR{pub.title | escape_latex}" \textit{\VAR{pub.journal | escape_latex}} \BLOCK{if pub.details} \VAR{pub.details | escape_latex} \BLOCK{endif} } \BLOCK{ endfor }
+\BLOCK{ endif }
+
+% \pdfbookmark{Additional information}{Additional information}
+% \section{Additional information}
+% \ecvitem[10pt]{}{Include here any other information that may be relevant, for example contact persons, references, etc. (Remove heading if not relevant).}
+% \ecvitem{}{\textbf{Personal interests}}
+% \ecvitem{}{\ldots}
+
+% \ecvsection{\small Consenso al trattamento dei dati personali}
+% \ecvitem{}{
+%  \small Il sottoscritto, ai sensi della Legge 675/96, autorizza il trattamento dei propri dati personali contenuti nel presente Curriculum Vitae, e dichiara di essere informato dei diritti di cui all’art. 13
+% }
+
+\end{europecv}
+
+\vspace{5.0cm}
+
+%\hfill\includegraphics[scale=0.05]{figure/sign.png}
+% \vspace{-2.5cm}
+% \SignatureAndDate{\hspace{1.5cm}Name Surname}
+
+
+\end{document} 
+
+
