@@ -6,9 +6,9 @@
   let { children } = $props();
 </script>
 
-<div class="grid min-h-screen grid-rows-[auto_1fr_auto]">
+<div class="flex flex-col min-h-screen">
   <Header />
-  <main class="bg-surface-50-950">
+  <main class="flex-1 flex flex-col min-h-0">
     {@render children()}
   </main>
   <Footer />
