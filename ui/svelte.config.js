@@ -1,29 +1,36 @@
 import adapter from '@sveltejs/adapter-static';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
-export default {
-  preprocess: vitePreprocess(),
-  kit: {
-    adapter: adapter({
-      pages: 'dist',
-      assets: 'dist',
-      fallback: null,
-      precompress: false,
-      strict: true,
-    }),
-    // Set base for GitHub Pages deployment via env variable:
-    // PUBLIC_BASE_PATH=/template-svelte-skeleton npm run build
-    paths: {
-      base: process.env.PUBLIC_BASE_PATH ?? '',
-    },
-    files: {
-      assets: 'public',
-    },
-    alias: {
-      '@components': 'src/components',
-      '@layouts': 'src/layouts',
-      '@styles': 'src/styles',
-      '@assets': 'src/assets',
-    },
-  },
+// When deploying to GitHub Pages the repo name becomes the base path.
+// GITHUB_REPOSITORY is set automatically in Actions (e.g. "mistahuman/svelte-skeleton-starter").
+const base = process.env.GITHUB_REPOSITORY ? '/' + process.env.GITHUB_REPOSITORY.split('/')[1] : '';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	compilerOptions: {
+		// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
+		runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
+	},
+	kit: {
+		adapter: adapter({
+			fallback: '404.html'
+		}),
+		paths: {
+			base
+		},
+		alias: {
+			$components: 'src/lib/components',
+			$stores: 'src/lib/stores',
+			$utils: 'src/lib/utils'
+		},
+		prerender: {
+			// Static assets (favicon, etc.) aren't served under the base path during local
+			// prerendering — they will resolve correctly on GitHub Pages.
+			handleHttpError: ({ path, message }) => {
+				if (/\.(svg|ico|png|webp|jpg|jpeg|gif|woff2?)$/.test(path)) return;
+				throw new Error(message);
+			}
+		}
+	}
 };
+
+export default config;
