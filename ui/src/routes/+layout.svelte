@@ -1,15 +1,13 @@
 <script lang="ts">
-  import '../styles/global.css';
-  import Header from '@components/generic/Header.svelte';
-  import Footer from '@components/generic/Footer.svelte';
+	import './layout.css';
+	import Header from '$lib/components/generic/Header.svelte';
 
-  let { children } = $props();
+	let { children } = $props();
 </script>
 
-<div class="flex flex-col min-h-screen">
-  <Header />
-  <main class="flex-1 flex flex-col min-h-0">
-    {@render children()}
-  </main>
-  <Footer />
+<div class="flex min-h-screen flex-col">
+	<Header />
+	<main class="flex min-h-0 flex-1 flex-col">
+		{@render children()}
+	</main>
 </div>

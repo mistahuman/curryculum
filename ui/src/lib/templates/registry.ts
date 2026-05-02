@@ -8,25 +8,25 @@ import ModernCV from './ModernCV.svelte';
 // To add a new template: create a Svelte component and add an entry here.
 
 export interface CVTemplate {
-  id: string;
-  label: string;
-  description: string;
-  component: Component<{ data: CVData }>;
+	id: string;
+	label: string;
+	description: string;
+	component: Component<{ data: CVData }>;
 }
 
 // ─── Registry ────────────────────────────────────────────────────────────────
 
 export const templates: CVTemplate[] = [
-  {
-    id: 'modern',
-    label: 'ModernCV',
-    description: 'Classic two-column timeline layout with color-accented section headers.',
-    component: ModernCV,
-  },
-  // Add new templates here ↓
-  // { id: 'europass', label: 'Europass', description: '...', component: EuropassCV },
+	{
+		id: 'modern',
+		label: 'ModernCV',
+		description: 'Classic two-column timeline layout with color-accented section headers.',
+		component: ModernCV
+	}
+	// Add new templates here ↓
+	// { id: 'europass', label: 'Europass', description: '...', component: EuropassCV },
 ];
 
 export function getTemplate(id: string): CVTemplate {
-  return templates.find((t) => t.id === id) ?? templates[0];
+	return templates.find((t) => t.id === id) ?? templates[0];
 }
