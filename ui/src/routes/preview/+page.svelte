@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { cvStore } from '$lib/stores/cv.svelte';
 	import { templates, getTemplate } from '$lib/templates/registry';
-	import { Printer, ArrowLeft, Download } from 'lucide-svelte';
+	import { ArrowLeft, Download, LoaderCircle } from 'lucide-svelte';
 	import { resolve } from '$app/paths';
 	import { browser } from '$app/environment';
 
@@ -9,32 +9,40 @@
 	const selected = $derived(getTemplate(selectedId));
 	const TemplateComponent = $derived(selected.component);
 
-	function printCV() {
-		if (browser) window.print();
-	}
+	let isExporting = $state(false);
 
-	function exportHTML() {
+	async function downloadPDF() {
 		if (!browser) return;
-		const el = document.querySelector('.cv-wrapper');
-		if (!el) return;
-		const html = `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>CV – ${cvStore.data.personal_info.name} ${cvStore.data.personal_info.surname}</title>
-  <style>* { box-sizing: border-box; } body { margin: 0; background: white; }</style>
-</head>
-<body>${el.innerHTML}</body>
-</html>`;
-		const blob = new Blob([html], { type: 'text/html' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = `${cvStore.data.code || 'cv'}.html`;
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-		URL.revokeObjectURL(url);
+		isExporting = true;
+		
+		try {
+			// Dynamic import since html2pdf.js requires window/document
+			const html2pdf = (await import('html2pdf.js')).default;
+			
+			// Select the wrapper that contains the true A4 dimensions and CSS
+			const el = document.querySelector('.cv-wrapper');
+			if (!el) return;
+
+			const name = cvStore.data.personal_info.name || 'cv';
+			const surname = cvStore.data.personal_info.surname || '';
+			const filename = `${name}_${surname}_cv`.trim().replace(/\s+/g, '_').toLowerCase() + '.pdf';
+
+			const opt = {
+				margin: 0,
+				filename: filename,
+				image: { type: 'jpeg', quality: 1 },
+				// html2canvas settings: scale 2 for high-res text
+				html2canvas: { scale: 2, useCORS: true },
+				jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+			};
+
+			await html2pdf().set(opt).from(el).save();
+		} catch (e) {
+			console.error('Error generating PDF:', e);
+			alert('Si è verificato un errore durante la generazione del PDF.');
+		} finally {
+			isExporting = false;
+		}
 	}
 </script>
 
@@ -65,11 +73,16 @@
 	</div>
 
 	<div class="ml-auto flex gap-2">
-		<button class="btn preset-outlined-surface-300-700 btn-sm" onclick={exportHTML}>
-			<Download size={14} /> HTML
-		</button>
-		<button class="btn preset-filled-primary-500 btn-sm" onclick={printCV}>
-			<Printer size={14} /> Print / PDF
+		<button 
+			class="btn preset-filled-primary-500 btn-sm" 
+			onclick={downloadPDF}
+			disabled={isExporting}
+		>
+			{#if isExporting}
+				<LoaderCircle size={14} class="animate-spin" /> Generazione...
+			{:else}
+				<Download size={14} /> Scarica PDF
+			{/if}
 		</button>
 	</div>
 </div>
@@ -81,11 +94,6 @@
 			<TemplateComponent data={cvStore.data} />
 		</div>
 	</div>
-</div>
-
-<!-- Print: render only the CV, no wrapper ─────────────────────────── -->
-<div class="print-only cv-wrapper">
-	<TemplateComponent data={cvStore.data} />
 </div>
 
 <style>
@@ -108,20 +116,9 @@
 		flex-shrink: 0;
 	}
 
-	@media print {
-		.no-print {
-			display: none !important;
-		}
-		.print-only {
-			display: block !important;
-		}
-
-		:global(body) {
-			background: white;
-		}
-	}
-
-	.print-only {
-		display: none;
+	/* We ensure the wrapper occupies full A4 area so html2pdf captures it perfectly */
+	.cv-wrapper {
+		width: 100%;
+		height: 100%;
 	}
 </style>
