@@ -1,6 +1,7 @@
 import type { Component } from 'svelte';
 import type { CVData } from '$lib/types/cv';
 import ModernCV from './ModernCV.svelte';
+import DeveloperCV from './DeveloperCV.svelte';
 
 // ─── Template interface ───────────────────────────────────────────────────────
 // Each CV template is a Svelte component that receives `data: CVData` as a prop
@@ -22,6 +23,12 @@ export const templates: CVTemplate[] = [
 		label: 'ModernCV',
 		description: 'Classic two-column timeline layout with color-accented section headers.',
 		component: ModernCV
+	},
+	{
+		id: 'developer',
+		label: 'DeveloperCV',
+		description: 'Two-column layout designed for tech profiles with a dark sidebar.',
+		component: DeveloperCV
 	}
 	// Add new templates here ↓
 	// { id: 'europass', label: 'Europass', description: '...', component: EuropassCV },

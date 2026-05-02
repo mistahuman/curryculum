@@ -7,18 +7,18 @@
 	const features = [
 		{
 			Icon: FileText,
-			title: 'Compilazione guidata',
-			desc: 'Sezioni dedicate per esperienze, formazione, competenze, lingue e molto altro.'
+			title: 'Build a steps',
+			desc: 'Sections for experiences, education, skills and more over.'
 		},
 		{
 			Icon: Eye,
-			title: 'Anteprima live',
-			desc: 'Vedi il risultato finale in tempo reale mentre compili i tuoi dati.'
+			title: 'Preview live',
+			desc: 'Print the result in live time.'
 		},
 		{
 			Icon: Printer,
 			title: 'Export PDF',
-			desc: 'Stampa direttamente dal browser oppure scarica il CV in HTML.'
+			desc: 'Export the CV in HTML or PDF.'
 		}
 	];
 </script>
@@ -34,12 +34,12 @@
 			Curry<span class="text-primary-500">culum</span>
 		</h1>
 		<p class="mx-auto max-w-sm text-lg opacity-60">
-			Il tuo CV professionale, curato e sempre a portata di mano.
+			Build your cv in easily steps
 		</p>
 	</div>
 
 	<a class="btn preset-filled-primary-500 px-8 text-base" href={resolve('/editor')}>
-		Crea il tuo CV <ChevronRight size={18} />
+		Build your CV <ChevronRight size={18} />
 	</a>
 </section>
 

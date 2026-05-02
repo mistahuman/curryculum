@@ -206,20 +206,21 @@
 <style>
 	/* ── Reset & base ─────────────────────────────────── */
 	.cv {
-		--accent: #2e74b3;
-		--text: #222;
-		--muted: #666;
-		--border: #ccc;
-		--date-w: 90px;
+		--accent: #0f172a; /* Slate 900 for a more elegant, professional look */
+		--text: #334155;   /* Slate 700 */
+		--heading: #0f172a;
+		--muted: #64748b;  /* Slate 500 */
+		--border: #e2e8f0; /* Slate 200 */
+		--date-w: 110px;
 
-		font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
-		font-size: 10.5pt;
-		line-height: 1.5;
+		font-family: 'Inter', system-ui, -apple-system, sans-serif;
+		font-size: 10pt;
+		line-height: 1.6;
 		color: var(--text);
 		background: white;
 		max-width: 210mm;
 		margin: 0 auto;
-		padding: 12mm 18mm 16mm;
+		padding: 14mm 20mm 18mm;
 		box-sizing: border-box;
 	}
 
@@ -228,34 +229,36 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-start;
-		gap: 16px;
-		padding-bottom: 10px;
-		border-bottom: 2px solid var(--accent);
-		margin-bottom: 18px;
+		gap: 20px;
+		padding-bottom: 16px;
+		border-bottom: 3px solid var(--accent);
+		margin-bottom: 24px;
 	}
 
 	h1 {
-		font-size: 26pt;
-		font-weight: 300;
-		margin: 0 0 2px;
+		font-size: 28pt;
+		font-weight: 800;
+		margin: 0 0 6px;
 		line-height: 1.1;
+		letter-spacing: -0.02em;
 	}
 
 	.name-light {
-		color: var(--text);
+		color: var(--heading);
 		font-weight: 300;
 	}
 
 	.name-bold {
 		color: var(--accent);
-		font-weight: 700;
+		font-weight: 800;
 	}
 
 	.job-title {
 		margin: 0;
-		font-size: 11pt;
+		font-size: 12pt;
 		color: var(--muted);
-		font-style: italic;
+		font-weight: 500;
+		letter-spacing: 0.01em;
 	}
 
 	.cv-contact {
@@ -263,33 +266,33 @@
 		margin: 0;
 		padding: 0;
 		font-size: 9pt;
-		color: var(--muted);
+		color: var(--text);
 		text-align: right;
 		line-height: 1.8;
 	}
 
 	.icon {
 		display: inline-block;
-		width: 14px;
+		width: 16px;
 		text-align: center;
-		margin-right: 4px;
-		color: var(--accent);
+		margin-right: 6px;
+		color: var(--muted);
 	}
 
 	/* ── Sections ────────────────────────────────────── */
 	section {
-		margin-bottom: 14px;
+		margin-bottom: 20px;
 	}
 
 	.section-title {
 		font-size: 12pt;
-		font-weight: 600;
-		color: var(--accent);
-		margin: 0 0 8px;
-		padding-bottom: 3px;
-		border-bottom: 1px solid var(--accent);
+		font-weight: 700;
+		color: var(--heading);
+		margin: 0 0 12px;
+		padding-bottom: 4px;
+		border-bottom: 1px solid var(--border);
 		text-transform: uppercase;
-		letter-spacing: 0.04em;
+		letter-spacing: 0.05em;
 		break-after: avoid;
 	}
 
@@ -297,8 +300,8 @@
 	.entry {
 		display: grid;
 		grid-template-columns: var(--date-w) 1fr;
-		gap: 8px 12px;
-		margin-bottom: 10px;
+		gap: 12px 16px;
+		margin-bottom: 16px;
 		break-inside: avoid;
 	}
 
@@ -306,43 +309,50 @@
 		font-size: 8.5pt;
 		color: var(--muted);
 		text-align: right;
-		padding-top: 1px;
-		line-height: 1.4;
+		padding-top: 2px;
+		line-height: 1.5;
+		font-weight: 500;
 	}
 
 	.entry-title {
 		margin: 0;
 		font-weight: 700;
-		font-size: 10.5pt;
+		font-size: 11pt;
+		color: var(--heading);
 	}
 
 	.entry-subtitle {
-		margin: 0 0 3px;
-		color: var(--muted);
-		font-size: 9.5pt;
+		margin: 2px 0 4px;
+		color: var(--accent);
+		font-size: 10pt;
+		font-weight: 500;
 	}
 
 	.entry-desc {
-		margin: 3px 0 0;
+		margin: 4px 0 0;
 		font-size: 9.5pt;
 		color: var(--text);
 	}
 
 	.achievements {
-		margin: 4px 0 0 0;
-		padding-left: 16px;
+		margin: 6px 0 0 0;
+		padding-left: 18px;
 		font-size: 9.5pt;
+		color: var(--text);
 	}
 
 	.achievements li {
-		margin-bottom: 2px;
+		margin-bottom: 4px;
+	}
+	.achievements li::marker {
+		color: var(--muted);
 	}
 
 	/* ── Tech skills ─────────────────────────────────── */
 	.skill-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-		gap: 4px 24px;
+		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+		gap: 6px 24px;
 	}
 
 	.skill-row {
@@ -353,8 +363,9 @@
 	}
 
 	.skill-name {
-		min-width: 80px;
-		font-weight: 500;
+		min-width: 90px;
+		font-weight: 600;
+		color: var(--heading);
 	}
 
 	.skill-dots {
@@ -371,8 +382,8 @@
 	/* ── Languages ───────────────────────────────────── */
 	.lang-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-		gap: 4px 24px;
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+		gap: 6px 24px;
 	}
 
 	.lang-row {
@@ -383,13 +394,14 @@
 	}
 
 	.lang-name {
-		min-width: 70px;
-		font-weight: 500;
+		min-width: 80px;
+		font-weight: 600;
+		color: var(--heading);
 	}
 
 	.lang-lvl {
 		color: var(--accent);
-		font-weight: 600;
+		font-weight: 700;
 		min-width: 40px;
 	}
 
@@ -403,31 +415,39 @@
 		margin: 0;
 		font-size: 9.5pt;
 		color: var(--text);
+		line-height: 1.6;
 	}
 
 	/* ── Lists ───────────────────────────────────────── */
 	.simple-list {
 		margin: 0;
-		padding-left: 16px;
+		padding-left: 18px;
 		font-size: 9.5pt;
 	}
 
 	.simple-list li {
-		margin-bottom: 3px;
+		margin-bottom: 4px;
+	}
+	.simple-list li::marker {
+		color: var(--muted);
 	}
 
 	.pub-list {
 		margin: 0;
-		padding-left: 16px;
+		padding-left: 18px;
 		font-size: 9.5pt;
 	}
 
 	.pub-list li {
-		margin-bottom: 5px;
+		margin-bottom: 6px;
+	}
+	.pub-list li::marker {
+		color: var(--muted);
 	}
 
 	.pub-authors {
-		font-weight: 500;
+		font-weight: 600;
+		color: var(--heading);
 	}
 
 	.pub-journal {
@@ -441,15 +461,16 @@
 	/* ── Cover letter ────────────────────────────────── */
 	.letter-company {
 		font-size: 9.5pt;
-		margin-bottom: 10px;
+		margin-bottom: 16px;
 	}
 
 	.letter-company p {
-		margin: 1px 0;
+		margin: 2px 0;
 	}
 
 	.letter-body {
-		font-size: 9.5pt;
+		font-size: 10pt;
+		line-height: 1.8;
 		white-space: pre-line;
 	}
 
