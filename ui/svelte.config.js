@@ -17,11 +17,6 @@ const config = {
 		paths: {
 			base
 		},
-		alias: {
-			$components: 'src/lib/components',
-			$stores: 'src/lib/stores',
-			$utils: 'src/lib/utils'
-		},
 		prerender: {
 			// Static assets (favicon, etc.) aren't served under the base path during local
 			// prerendering — they will resolve correctly on GitHub Pages.

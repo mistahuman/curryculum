@@ -1,0 +1,57 @@
+/* Minimal structural helpers — only for layout patterns not expressible with Tailwind alone */
+
+/* ── Tech skill level dots ─────────────────────────────── */
+.level-dots {
+	display: flex;
+	gap: 3px;
+	align-items: center;
+}
+
+.dot {
+	width: 13px;
+	height: 13px;
+	border-radius: 50%;
+	border: 2px solid var(--color-primary-500);
+	cursor: pointer;
+	transition: background 150ms;
+	flex-shrink: 0;
+	background: transparent;
+	padding: 0;
+}
+
+.dot.filled {
+	background: var(--color-primary-500);
+}
+
+/* ── Input with prefix (github, linkedin) ─────────────── */
+.input-group {
+	display: flex;
+	align-items: center;
+	border: 1px solid color-mix(in oklab, var(--color-surface-300) 60%, transparent);
+	border-radius: var(--radius-base);
+	overflow: hidden;
+}
+
+.input-group-prefix {
+	padding: 0 10px;
+	font-size: 0.8rem;
+	opacity: 0.45;
+	background: color-mix(in oklab, var(--color-surface-200) 50%, transparent);
+	border-right: 1px solid color-mix(in oklab, var(--color-surface-300) 50%, transparent);
+	white-space: nowrap;
+	align-self: stretch;
+	display: flex;
+	align-items: center;
+}
+
+.input-group .input {
+	border: none !important;
+	border-radius: 0 !important;
+	flex: 1;
+	min-width: 0;
+}
+
+.input-group:focus-within {
+	outline: 2px solid var(--color-primary-500);
+	outline-offset: 0;
+}

@@ -1,39 +1,64 @@
 <script lang="ts">
-	import WelcomeHome from '$lib/components/WelcomeHome.svelte';
+	import Logo from '$lib/components/icons/Logo.svelte';
+	import Footer from '$lib/components/generic/Footer.svelte';
+	import { FileText, Eye, Printer, ChevronRight } from 'lucide-svelte';
+	import { resolve } from '$app/paths';
 
-	import Card from '$lib/components/generic/Card.svelte';
-
-	const stack = [
-		{ label: 'SvelteKit', description: 'Full-stack framework for building web apps.' },
-		{ label: 'Skeleton UI', description: 'UI toolkit built for Svelte and Tailwind.' },
-		{ label: 'TailwindCSS', description: 'Utility-first CSS framework.' },
-		{ label: 'TypeScript', description: 'Typed JavaScript for safer code.' },
-		{ label: 'ESLint + Prettier', description: 'Linting and formatting out of the box.' },
-		{ label: 'Husky', description: 'Git hooks to enforce code quality on commit.' }
+	const features = [
+		{
+			Icon: FileText,
+			title: 'Compilazione guidata',
+			desc: 'Sezioni dedicate per esperienze, formazione, competenze, lingue e molto altro.'
+		},
+		{
+			Icon: Eye,
+			title: 'Anteprima live',
+			desc: 'Vedi il risultato finale in tempo reale mentre compili i tuoi dati.'
+		},
+		{
+			Icon: Printer,
+			title: 'Export PDF',
+			desc: 'Stampa direttamente dal browser oppure scarica il CV in HTML.'
+		}
 	];
 </script>
 
-<div class="gradient-homepage-one">
-	<section>
-		<div class="container mx-auto flex justify-center p-10 pt-20 pb-5">
-			<WelcomeHome />
-		</div>
-	</section>
-</div>
-<div class="gradient-homepage-two">
-	<section>
-		<!-- Stack -->
-		<div class="space-y-4">
-			<div class="container mx-auto max-w-3xl space-y-12 px-4 py-16">
-				<h2 class="text-center h3 font-semibold">What's inside</h2>
-				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-					{#each stack as item (item.label)}
-						<Card title={item.label}>
-							<p>{item.description}</p>
-						</Card>
-					{/each}
+<!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+<section
+	class="gradient-homepage-one flex min-h-[calc(100vh-70px)] flex-col items-center justify-center gap-10 px-4 text-center"
+>
+	<Logo width="72" height="72" />
+
+	<div class="space-y-4">
+		<h1 class="text-5xl font-bold tracking-tight md:text-7xl">
+			Curry<span class="text-primary-500">culum</span>
+		</h1>
+		<p class="mx-auto max-w-sm text-lg opacity-60">
+			Il tuo CV professionale, curato e sempre a portata di mano.
+		</p>
+	</div>
+
+	<a class="btn preset-filled-primary-500 px-8 text-base" href={resolve('/editor')}>
+		Crea il tuo CV <ChevronRight size={18} />
+	</a>
+</section>
+
+<!-- ── Features ─────────────────────────────────────────────────────────── -->
+<section class="container mx-auto max-w-4xl px-6 py-20">
+	<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+		{#each features as { Icon, title, desc } (title)}
+			<div class="card space-y-3 border border-surface-200-800 preset-filled-surface-100-900 p-6">
+				<div
+					class="flex size-10 items-center justify-center rounded-lg bg-primary-500/10 text-primary-500"
+				>
+					<Icon size={20} />
 				</div>
+				<h3 class="font-semibold">{title}</h3>
+				<p class="text-sm opacity-60">{desc}</p>
 			</div>
-		</div>
-	</section>
-</div>
+		{/each}
+	</div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────────────────────── -->
+<Footer />
