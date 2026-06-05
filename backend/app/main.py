@@ -7,9 +7,7 @@ import logging
 import uvicorn
 
 from app.conf.config import setup_advanced_logging, Config
-from app.models.exampleitem import ExampleItem
 from app.models.cv import CVProfile
-from app.routers import exampleitem
 from app.routers import cv
 
 conf_logger = setup_advanced_logging()
@@ -21,7 +19,7 @@ async def lifespan(app: FastAPI):
     client = AsyncMongoClient(Config.app_settings["mongodb_url"])
     await init_beanie(
         database=client[Config.app_settings["db_name"]],
-        document_models=[ExampleItem, CVProfile],
+        document_models=[CVProfile],
     )
     logger.info("Beanie initialized")
     yield
@@ -43,7 +41,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(exampleitem.router, tags=["exampleitems"])
 app.include_router(cv.router, tags=["cv"])
 
 

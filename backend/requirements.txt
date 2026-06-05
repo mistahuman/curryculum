@@ -2,6 +2,7 @@
 fastapi
 uvicorn
 beanie
+pydantic[email]
 python-dotenv
 pyaml
 # test
