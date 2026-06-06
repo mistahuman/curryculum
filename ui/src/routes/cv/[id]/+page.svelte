@@ -3,26 +3,29 @@
 	import { cvApi } from '$lib/api/cv';
 	import { uiStore } from '$lib/stores/ui.svelte';
 	import type { CVProfile } from '$lib/types/cv';
-	import { ArrowLeft, Eye, Save, Plus, Trash2, Download } from 'lucide-svelte';
+	import { ArrowLeft, Eye, Save, Plus, Trash2, Download, User, Briefcase, GraduationCap, Wrench, Award } from 'lucide-svelte';
 
 	let { data } = $props();
 
 	let cv = $state<CVProfile>(JSON.parse(JSON.stringify(data.profile)));
 	let saving = $state(false);
+	let savedJson = $state(JSON.stringify(data.profile));
+	let dirty = $derived(JSON.stringify(cv) !== savedJson);
 	let activeTab = $state<'personal' | 'experience' | 'education' | 'skills' | 'extra'>('personal');
 
 	const tabs = [
-		{ id: 'personal', label: 'Personal' },
-		{ id: 'experience', label: 'Experience' },
-		{ id: 'education', label: 'Education' },
-		{ id: 'skills', label: 'Skills' },
-		{ id: 'extra', label: 'Extra' }
+		{ id: 'personal', label: 'Personal', icon: User },
+		{ id: 'experience', label: 'Experience', icon: Briefcase },
+		{ id: 'education', label: 'Education', icon: GraduationCap },
+		{ id: 'skills', label: 'Skills', icon: Wrench },
+		{ id: 'extra', label: 'Extra', icon: Award }
 	] as const;
 
 	async function save() {
 		saving = true;
 		try {
 			await cvApi.update(cv.id, cv);
+			savedJson = JSON.stringify(cv);
 			uiStore.toast('Saved', 'success');
 		} catch {
 			uiStore.toast('Save failed', 'error');
@@ -65,29 +68,36 @@
 				placeholder="CV label"
 			/>
 		</div>
-		<div class="flex gap-2">
+		<div class="flex items-center gap-2">
 			<button class="btn preset-tonal" onclick={exportJson}>
 				<Download size={16} /><span class="hidden sm:inline">Export JSON</span>
 			</button>
 			<a class="btn preset-tonal" href={resolve(`/cv/${cv.id}/preview`)}>
 				<Eye size={16} /><span class="hidden sm:inline">Preview</span>
 			</a>
-			<button class="btn preset-filled-primary-500" onclick={save} disabled={saving}>
-				<Save size={16} /><span>{saving ? 'Saving…' : 'Save'}</span>
-			</button>
+			<div class="relative">
+				<button class="btn preset-filled-primary-500" onclick={save} disabled={saving}>
+					<Save size={16} /><span>{saving ? 'Saving…' : 'Save'}</span>
+				</button>
+				{#if dirty && !saving}
+					<span class="bg-warning-500 absolute -right-1 -top-1 size-2 rounded-full"></span>
+				{/if}
+			</div>
 		</div>
 	</div>
 
 	<!-- Tabs -->
-	<div class="border-surface-200-800 flex gap-1 border-b">
+	<div class="border-surface-200-800 flex gap-0.5 border-b">
 		{#each tabs as tab (tab.id)}
+			{@const Icon = tab.icon}
 			<button
-				class="px-4 py-2 text-sm font-medium transition-colors {activeTab === tab.id
+				class="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-colors {activeTab === tab.id
 					? 'border-primary-500 text-primary-500 -mb-px border-b-2'
 					: 'text-surface-500 hover:text-surface-900 dark:hover:text-surface-100'}"
 				onclick={() => (activeTab = tab.id)}
 			>
-				{tab.label}
+				<Icon size={14} />
+				<span class="hidden sm:inline">{tab.label}</span>
 			</button>
 		{/each}
 	</div>
@@ -143,39 +153,50 @@
 		<div class="space-y-4">
 			{#each cv.experience as exp, i (i)}
 				<div class="card bg-surface-100-900 space-y-3 p-4">
-					<div class="flex items-center justify-between">
-						<span class="text-surface-400 text-sm">#{i + 1}</span>
-						<button class="btn-icon btn-sm hover:preset-filled-error-500" onclick={() => cv.experience.splice(i, 1)}>
+					<div class="flex items-start justify-between gap-2">
+						<div class="min-w-0 flex-1">
+							{#if exp.job_title || exp.company}
+								<p class="truncate text-sm font-semibold">{exp.job_title || exp.company}</p>
+								{#if exp.job_title && exp.company}
+									<p class="text-surface-500 truncate text-xs">{exp.company}</p>
+								{/if}
+							{:else}
+								<p class="text-surface-400 text-sm italic">Experience #{i + 1}</p>
+							{/if}
+						</div>
+						<button class="btn-icon btn-sm hover:preset-filled-error-500 shrink-0" onclick={() => cv.experience.splice(i, 1)}>
 							<Trash2 size={14} />
 						</button>
 					</div>
-					<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-						<label class="label">
-							<span class="label-text">Job title</span>
-							<input class="input" type="text" bind:value={exp.job_title} />
-						</label>
-						<label class="label">
-							<span class="label-text">Company</span>
-							<input class="input" type="text" bind:value={exp.company} />
-						</label>
-						<label class="label">
-							<span class="label-text">Company type</span>
-							<input class="input" type="text" placeholder="e.g. Startup, Enterprise" bind:value={exp.company_type} />
-						</label>
-						<div class="grid grid-cols-2 gap-3">
+					<div class="border-surface-200-800 border-t pt-3">
+						<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 							<label class="label">
-								<span class="label-text">Start</span>
-								<input class="input" type="date" bind:value={exp.start_date} />
+								<span class="label-text">Job title</span>
+								<input class="input" type="text" bind:value={exp.job_title} />
 							</label>
 							<label class="label">
-								<span class="label-text">End</span>
-								<input class="input" type="date" bind:value={exp.end_date} />
+								<span class="label-text">Company</span>
+								<input class="input" type="text" bind:value={exp.company} />
+							</label>
+							<label class="label">
+								<span class="label-text">Company type</span>
+								<input class="input" type="text" placeholder="e.g. Startup, Enterprise" bind:value={exp.company_type} />
+							</label>
+							<div class="grid grid-cols-2 gap-3">
+								<label class="label">
+									<span class="label-text">Start</span>
+									<input class="input" type="date" bind:value={exp.start_date} />
+								</label>
+								<label class="label">
+									<span class="label-text">End</span>
+									<input class="input" type="date" bind:value={exp.end_date} />
+								</label>
+							</div>
+							<label class="label sm:col-span-2">
+								<span class="label-text">Description</span>
+								<textarea class="textarea" rows="3" bind:value={exp.description}></textarea>
 							</label>
 						</div>
-						<label class="label sm:col-span-2">
-							<span class="label-text">Description</span>
-							<textarea class="textarea" rows="3" bind:value={exp.description}></textarea>
-						</label>
 					</div>
 				</div>
 			{/each}
@@ -190,25 +211,36 @@
 		<div class="space-y-4">
 			{#each cv.education as edu, i (i)}
 				<div class="card bg-surface-100-900 space-y-3 p-4">
-					<div class="flex items-center justify-between">
-						<span class="text-surface-400 text-sm">#{i + 1}</span>
-						<button class="btn-icon btn-sm hover:preset-filled-error-500" onclick={() => cv.education.splice(i, 1)}>
+					<div class="flex items-start justify-between gap-2">
+						<div class="min-w-0 flex-1">
+							{#if edu.degree || edu.institution}
+								<p class="truncate text-sm font-semibold">{edu.degree || edu.institution}</p>
+								{#if edu.degree && edu.institution}
+									<p class="text-surface-500 truncate text-xs">{edu.institution}</p>
+								{/if}
+							{:else}
+								<p class="text-surface-400 text-sm italic">Education #{i + 1}</p>
+							{/if}
+						</div>
+						<button class="btn-icon btn-sm hover:preset-filled-error-500 shrink-0" onclick={() => cv.education.splice(i, 1)}>
 							<Trash2 size={14} />
 						</button>
 					</div>
-					<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-						<label class="label">
-							<span class="label-text">Degree</span>
-							<input class="input" type="text" bind:value={edu.degree} />
-						</label>
-						<label class="label">
-							<span class="label-text">Institution</span>
-							<input class="input" type="text" bind:value={edu.institution} />
-						</label>
-						<label class="label">
-							<span class="label-text">Graduation year</span>
-							<input class="input" type="number" bind:value={edu.graduation_year} />
-						</label>
+					<div class="border-surface-200-800 border-t pt-3">
+						<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+							<label class="label">
+								<span class="label-text">Degree</span>
+								<input class="input" type="text" bind:value={edu.degree} />
+							</label>
+							<label class="label">
+								<span class="label-text">Institution</span>
+								<input class="input" type="text" bind:value={edu.institution} />
+							</label>
+							<label class="label">
+								<span class="label-text">Graduation year</span>
+								<input class="input" type="number" bind:value={edu.graduation_year} />
+							</label>
+						</div>
 					</div>
 				</div>
 			{/each}
@@ -283,13 +315,25 @@
 				<h3 class="h4 font-semibold">Certifications</h3>
 				<div class="space-y-3">
 					{#each cv.certifications as cert, i (i)}
-						<div class="card bg-surface-100-900 grid grid-cols-1 gap-3 p-4 sm:grid-cols-2">
-							<label class="label"><span class="label-text">Title</span><input class="input" type="text" bind:value={cert.title} /></label>
-							<label class="label"><span class="label-text">Issuer</span><input class="input" type="text" bind:value={cert.issuer} /></label>
-							<label class="label"><span class="label-text">Year</span><input class="input" type="number" bind:value={cert.year} /></label>
-							<label class="label"><span class="label-text">URL</span><input class="input" type="url" bind:value={cert.url} /></label>
-							<div class="flex justify-end sm:col-span-2">
-								<button class="btn-icon hover:preset-filled-error-500" onclick={() => cv.certifications.splice(i, 1)}><Trash2 size={14} /></button>
+						<div class="card bg-surface-100-900 space-y-3 p-4">
+							<div class="flex items-start justify-between gap-2">
+								<div class="min-w-0 flex-1">
+									{#if cert.title}
+										<p class="truncate text-sm font-semibold">{cert.title}</p>
+										{#if cert.issuer}<p class="text-surface-500 text-xs">{cert.issuer}</p>{/if}
+									{:else}
+										<p class="text-surface-400 text-sm italic">Certification #{i + 1}</p>
+									{/if}
+								</div>
+								<button class="btn-icon hover:preset-filled-error-500 shrink-0" onclick={() => cv.certifications.splice(i, 1)}>
+									<Trash2 size={14} />
+								</button>
+							</div>
+							<div class="border-surface-200-800 grid grid-cols-1 gap-3 border-t pt-3 sm:grid-cols-2">
+								<label class="label"><span class="label-text">Title</span><input class="input" type="text" bind:value={cert.title} /></label>
+								<label class="label"><span class="label-text">Issuer</span><input class="input" type="text" bind:value={cert.issuer} /></label>
+								<label class="label"><span class="label-text">Year</span><input class="input" type="number" bind:value={cert.year} /></label>
+								<label class="label"><span class="label-text">URL</span><input class="input" type="url" bind:value={cert.url} /></label>
 							</div>
 						</div>
 					{/each}
@@ -303,13 +347,25 @@
 				<h3 class="h4 font-semibold">Publications</h3>
 				<div class="space-y-3">
 					{#each cv.publications as pub, i (i)}
-						<div class="card bg-surface-100-900 grid grid-cols-1 gap-3 p-4 sm:grid-cols-2">
-							<label class="label"><span class="label-text">Title</span><input class="input" type="text" bind:value={pub.title} /></label>
-							<label class="label"><span class="label-text">Venue</span><input class="input" type="text" bind:value={pub.venue} /></label>
-							<label class="label"><span class="label-text">Year</span><input class="input" type="number" bind:value={pub.year} /></label>
-							<label class="label"><span class="label-text">URL</span><input class="input" type="url" bind:value={pub.url} /></label>
-							<div class="flex justify-end sm:col-span-2">
-								<button class="btn-icon hover:preset-filled-error-500" onclick={() => cv.publications.splice(i, 1)}><Trash2 size={14} /></button>
+						<div class="card bg-surface-100-900 space-y-3 p-4">
+							<div class="flex items-start justify-between gap-2">
+								<div class="min-w-0 flex-1">
+									{#if pub.title}
+										<p class="truncate text-sm font-semibold">{pub.title}</p>
+										{#if pub.venue}<p class="text-surface-500 text-xs">{pub.venue}</p>{/if}
+									{:else}
+										<p class="text-surface-400 text-sm italic">Publication #{i + 1}</p>
+									{/if}
+								</div>
+								<button class="btn-icon hover:preset-filled-error-500 shrink-0" onclick={() => cv.publications.splice(i, 1)}>
+									<Trash2 size={14} />
+								</button>
+							</div>
+							<div class="border-surface-200-800 grid grid-cols-1 gap-3 border-t pt-3 sm:grid-cols-2">
+								<label class="label"><span class="label-text">Title</span><input class="input" type="text" bind:value={pub.title} /></label>
+								<label class="label"><span class="label-text">Venue</span><input class="input" type="text" bind:value={pub.venue} /></label>
+								<label class="label"><span class="label-text">Year</span><input class="input" type="number" bind:value={pub.year} /></label>
+								<label class="label"><span class="label-text">URL</span><input class="input" type="url" bind:value={pub.url} /></label>
 							</div>
 						</div>
 					{/each}

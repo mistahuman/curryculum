@@ -61,6 +61,10 @@
 		reader.readAsText(file);
 		(e.target as HTMLInputElement).value = '';
 	}
+
+	function initials(name: string, surname: string) {
+		return `${name[0] ?? ''}${surname[0] ?? ''}`.toUpperCase();
+	}
 </script>
 
 <div class="container mx-auto max-w-4xl space-y-8 px-4 py-10">
@@ -83,8 +87,8 @@
 	</div>
 
 	{#if showNewForm}
-		<div class="card bg-surface-100-900 space-y-3 p-4">
-			<p class="font-medium">New CV profile</p>
+		<div class="card bg-surface-100-900 space-y-3 p-5">
+			<p class="font-semibold">New CV profile</p>
 			<div class="flex gap-2">
 				<input
 					class="input flex-1"
@@ -105,9 +109,14 @@
 	{/if}
 
 	{#if data.profiles.length === 0 && !showNewForm}
-		<div class="flex flex-col items-center gap-4 py-20 text-center">
-			<FileText size={48} class="text-surface-400" />
-			<p class="text-surface-500 text-lg">No CVs yet</p>
+		<div class="flex flex-col items-center gap-4 py-24 text-center">
+			<div class="bg-primary-500/10 flex size-20 items-center justify-center rounded-full">
+				<FileText size={40} class="text-primary-500" />
+			</div>
+			<div class="space-y-1">
+				<p class="font-semibold text-lg">No CVs yet</p>
+				<p class="text-surface-500 text-sm">Create your first profile to get started</p>
+			</div>
 			<button class="btn preset-filled-primary-500" onclick={() => (showNewForm = true)}>
 				<Plus size={16} /><span>Create your first CV</span>
 			</button>
@@ -115,17 +124,31 @@
 	{:else}
 		<div class="space-y-3">
 			{#each data.profiles as profile (profile.id)}
-				<div class="card bg-surface-100-900 flex items-center gap-4 p-4">
-					<div class="bg-primary-500/10 text-primary-500 flex size-10 shrink-0 items-center justify-center rounded-lg">
-						<FileText size={20} />
-					</div>
+				<div class="card bg-surface-100-900 hover:shadow-md flex items-center gap-4 p-4 transition-shadow duration-200">
+					<!-- Avatar -->
+					{#if profile.name.trim() && profile.surname.trim()}
+						<div class="bg-primary-500 flex size-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white">
+							{initials(profile.name, profile.surname)}
+						</div>
+					{:else}
+						<div class="bg-primary-500/10 text-primary-500 flex size-10 shrink-0 items-center justify-center rounded-lg">
+							<FileText size={20} />
+						</div>
+					{/if}
+
+					<!-- Info -->
 					<div class="min-w-0 flex-1">
 						<p class="truncate font-semibold">{profile.label}</p>
 						{#if profile.name || profile.surname}
 							<p class="text-surface-500 text-sm">{profile.name} {profile.surname}</p>
+						{:else}
+							<p class="text-surface-400 text-sm italic">No name set</p>
 						{/if}
 					</div>
-					<div class="flex shrink-0 gap-1">
+
+					<!-- Actions -->
+					<div class="flex shrink-0 items-center gap-1">
+						<span class="border-surface-200-800 mr-1 h-6 border-r"></span>
 						<a class="btn-icon preset-tonal" href={resolve(`/cv/${profile.id}/preview`)} title="Preview">
 							<Eye size={16} />
 						</a>
